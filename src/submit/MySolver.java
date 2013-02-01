@@ -47,22 +47,39 @@ public class MySolver implements Flow.Solver {
 	        	} else {
 	        		meets = qit.successors();       		
 	        	}
-	        	DataflowObject d_obj = analysis.newTempVar();
+	        	DataflowObject d_obj = null;
 	            while(meets.hasNext()){
 	            		Quad q1 = meets.next();
-	            		if (q1 != null) {
-	            			if (analysis.isForward()) {
-	            				d_obj.meetWith(analysis.getOut(q1));
-	            			} else {
-	            				d_obj.meetWith(analysis.getIn(q1));
-	            			}
-	            		} else{
-	            			if (analysis.isForward()) {
-	            				d_obj.meetWith(analysis.getEntry());
-	            			} else {
-	            				d_obj.meetWith(analysis.getExit());
-	            			}
-                        }
+	            		if (d_obj == null) {
+	            			d_obj = analysis.newTempVar();
+	            			if (q1 != null) {
+		            			if (analysis.isForward()) {
+		            				d_obj.copy(analysis.getOut(q1));
+		            			} else {
+		            				d_obj.copy(analysis.getIn(q1));
+		            			}
+		            		} else{
+		            			if (analysis.isForward()) {
+		            				d_obj.copy(analysis.getEntry());
+		            			} else {
+		            				d_obj.copy(analysis.getExit());
+		            			}
+	                        }
+	            		} else {
+		            		if (q1 != null) {
+		            			if (analysis.isForward()) {
+		            				d_obj.meetWith(analysis.getOut(q1));
+		            			} else {
+		            				d_obj.meetWith(analysis.getIn(q1));
+		            			}
+		            		} else{
+		            			if (analysis.isForward()) {
+		            				d_obj.meetWith(analysis.getEntry());
+		            			} else {
+		            				d_obj.meetWith(analysis.getExit());
+		            			}
+	                        }
+	            		}
 	        	}
                 if(buildTerminals){
 	        	    if (analysis.isForward()){

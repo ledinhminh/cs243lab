@@ -17,9 +17,17 @@ class TestFaintness {
      * Run the test from root dir using
      * bin/parun flow.Flow submit.MySolver submit.Faintness submit.TestFaintness
      */
-    /*
-      void test2() {
+    
+      int test2() {
+    	int y = 0;
+    	int i = 0;
+    	int x = 0;
+    	while(i < 3) {
+    		x = x + 1;
+    		i += 1;
+    		y = y + 1;
+    	}
+    	return y;
       }
-      ...
-    */
+    
 }
