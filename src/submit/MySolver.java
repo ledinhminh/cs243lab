@@ -37,102 +37,102 @@ public class MySolver implements Flow.Solver {
         boolean buildTerminals=true;
         Set<Quad> terminals=new HashSet<Quad>();
         while (changed) {
-        	changed = false;
-        	QuadIterator qit = new QuadIterator(cfg);
-        	while (qit.hasNext()) {
-        		Quad q = qit.next();
-        		Iterator<Quad> meets;
-	        	if (analysis.isForward()){
-	        		meets = qit.predecessors();
-	        	} else {
-	        		meets = qit.successors();       		
-	        	}
-	        	DataflowObject d_obj = null;
-	            while(meets.hasNext()){
-	            		Quad q1 = meets.next();
-	            		if (d_obj == null) {
-	            			d_obj = analysis.newTempVar();
-	            			if (q1 != null) {
-		            			if (analysis.isForward()) {
-		            				d_obj.copy(analysis.getOut(q1));
-		            			} else {
-		            				d_obj.copy(analysis.getIn(q1));
-		            			}
-		            		} else{
-		            			if (analysis.isForward()) {
-		            				d_obj.copy(analysis.getEntry());
-		            			} else {
-		            				d_obj.copy(analysis.getExit());
-		            			}
-	                        }
-	            		} else {
-		            		if (q1 != null) {
-		            			if (analysis.isForward()) {
-		            				d_obj.meetWith(analysis.getOut(q1));
-		            			} else {
-		            				d_obj.meetWith(analysis.getIn(q1));
-		            			}
-		            		} else{
-		            			if (analysis.isForward()) {
-		            				d_obj.meetWith(analysis.getEntry());
-		            			} else {
-		            				d_obj.meetWith(analysis.getExit());
-		            			}
-	                        }
-	            		}
-	        	}
+            changed = false;
+            QuadIterator qit = new QuadIterator(cfg);
+            while (qit.hasNext()) {
+                Quad q = qit.next();
+                Iterator<Quad> meets;
+                if (analysis.isForward()){
+                    meets = qit.predecessors();
+                } else {
+                    meets = qit.successors();       		
+                }
+                DataflowObject d_obj = null;
+                while(meets.hasNext()){
+                    Quad q1 = meets.next();
+                    if (d_obj == null) {
+                        d_obj = analysis.newTempVar();
+                        if (q1 != null) {
+                            if (analysis.isForward()) {
+                                d_obj.copy(analysis.getOut(q1));
+                            } else {
+                                d_obj.copy(analysis.getIn(q1));
+                            }
+                        } else{
+                            if (analysis.isForward()) {
+                                d_obj.copy(analysis.getEntry());
+                            } else {
+                                d_obj.copy(analysis.getExit());
+                            }
+                        }
+                    } else {
+                        if (q1 != null) {
+                            if (analysis.isForward()) {
+                                d_obj.meetWith(analysis.getOut(q1));
+                            } else {
+                                d_obj.meetWith(analysis.getIn(q1));
+                            }
+                        } else{
+                            if (analysis.isForward()) {
+                                d_obj.meetWith(analysis.getEntry());
+                            } else {
+                                d_obj.meetWith(analysis.getExit());
+                            }
+                        }
+                    }
+                }
                 if(buildTerminals){
-	        	    if (analysis.isForward()){
-	        		    meets = qit.successors();       		
-	        	    } else {
-	        		    meets = qit.predecessors();
-	        	    }
+                    if (analysis.isForward()){
+                        meets = qit.successors();       		
+                    } else {
+                        meets = qit.predecessors();
+                    }
                     while(meets.hasNext()){
-	            		Quad qt = meets.next();
-	            		if (qt == null) {
+                        Quad qt = meets.next();
+                        if (qt == null) {
                             terminals.add(q);
                         }
                     }
                 }
-	            DataflowObject old = analysis.newTempVar();
-	            if (analysis.isForward()) {
-	                old.copy(analysis.getOut(q));
-	                analysis.setIn(q, d_obj);
-	            } else {
-	                old.copy(analysis.getIn(q));
-	                analysis.setOut(q, d_obj);
-	            }	               
-	            analysis.processQuad(q);
-                    DataflowObject terminal;
-	        	    if (analysis.isForward()){
-	        		    terminal=analysis.getExit();
-	        	    } else {
-	        		    terminal=analysis.getEntry();
-	        	    }
+                DataflowObject old = analysis.newTempVar();
+                if (analysis.isForward()) {
+                    old.copy(analysis.getOut(q));
+                    analysis.setIn(q, d_obj);
+                } else {
+                    old.copy(analysis.getIn(q));
+                    analysis.setOut(q, d_obj);
+                }	               
+                analysis.processQuad(q);
+                DataflowObject terminal;
+                if (analysis.isForward()){
+                    terminal=analysis.getExit();
+                } else {
+                    terminal=analysis.getEntry();
+                }
                 for(Quad qt:terminals){
-	        	    if (analysis.isForward()){
-	        		    terminal.meetWith(analysis.getOut(qt));       		
-	        	    } else {
-	        		    terminal.meetWith(analysis.getIn(qt));       		
-	        	    }
+                    if (analysis.isForward()){
+                        terminal.meetWith(analysis.getOut(qt));       		
+                    } else {
+                        terminal.meetWith(analysis.getIn(qt));       		
+                    }
                 }   
-	        	if (analysis.isForward()){
-	        		    analysis.setExit(terminal);
-	        	} else {
-	        		    analysis.setEntry(terminal);
-	        	}
-	            DataflowObject res = analysis.newTempVar();
-	            if (analysis.isForward()) {
-	             	res.copy(analysis.getOut(q));
-	            } else {
-	                res.copy(analysis.getIn(q));    	
-	            }
-	            if (!changed && !old.equals(res)) {
-	                changed = true;
-	            }
-        	}
-                    buildTerminals=false;
-        	
+                if (analysis.isForward()){
+                    analysis.setExit(terminal);
+                } else {
+                    analysis.setEntry(terminal);
+                }
+                DataflowObject res = analysis.newTempVar();
+                if (analysis.isForward()) {
+                    res.copy(analysis.getOut(q));
+                } else {
+                    res.copy(analysis.getIn(q));    	
+                }
+                if (!changed && !old.equals(res)) {
+                    changed = true;
+                }
+            }
+            buildTerminals=false;
+
         }
 
         // this needs to come last.

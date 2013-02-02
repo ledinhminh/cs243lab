@@ -10,7 +10,6 @@ import java.util.TreeSet;
 import joeq.Compiler.Quad.*;
 import joeq.Compiler.Quad.Operand.RegisterOperand;
 import flow.Flow;
-import flow.Liveness.VarSet;
 /**
  * Skeleton class for implementing a faint variable analysis
  * using the Flow.Analysis interface.
@@ -42,7 +41,7 @@ public class Faintness implements Flow.Analysis {
         }
 
         public void setToTop() {
-            set = new TreeSet<String>(VarSet.universalSet);
+            set = new TreeSet<String>(MyDataflowObject.universalSet);
         }
 
         public void meetWith(Flow.DataflowObject o) {
@@ -140,24 +139,34 @@ public class Faintness implements Flow.Analysis {
          * Your remaining initialization code goes here *
          ************************************************/
         map=new TreeMap<String, Set<Integer>>();
-        VarSet.universalSet = new TreeSet<String>();
+        MyDataflowObject.universalSet = new TreeSet<String>();
         int numargs = cfg.getMethod().getParamTypes().length;
         for (int i = 0; i < numargs; i++) {
-        	VarSet.universalSet.add("R"+i);
+        	MyDataflowObject.universalSet.add("R"+i);
         }
         
         qit = new QuadIterator(cfg);
         while (qit.hasNext()) {
           Quad q = qit.next();
           for (RegisterOperand def : q.getDefinedRegisters()) {
-        	  VarSet.universalSet.add(def.getRegister().toString());
+        	  MyDataflowObject.universalSet.add(def.getRegister().toString());
           }
           for (RegisterOperand use : q.getUsedRegisters()) {
-        	  VarSet.universalSet.add(use.getRegister().toString());
+        	  MyDataflowObject.universalSet.add(use.getRegister().toString());
           }
           
         }
         exit.setToTop();
+        entry.setToTop();
+        qit = new QuadIterator(cfg);
+        while (qit.hasNext()) {
+            int id = qit.next().getID();
+            in[id].setToTop();
+            out[id].setToTop();
+        }
+        
+        System.out.println("Initialization completed.");
+
     }
 
     /**
@@ -240,9 +249,10 @@ public class Faintness implements Flow.Analysis {
 
     public void processQuad(Quad q) {
     	transferfn.val.copy(out[q.getID()]);
+        //System.out.println(q.getID()+"out:"+transferfn.val);
         transferfn.visitQuad(q);
+        //System.out.println(q.getID()+"in: "+transferfn.val);
         in[q.getID()].copy(transferfn.val);
-        //System.out.println(val);
     }
     private TransferFunction transferfn = new TransferFunction ();
     public static class TransferFunction extends QuadVisitor.EmptyVisitor {
@@ -257,15 +267,16 @@ public class Faintness implements Flow.Analysis {
             }
             
             for (RegisterOperand def : q.getDefinedRegisters()) {
-            	if (!uses.contains(def))
+            	if (!uses.contains(def)){
             		val.genVar(def.getRegister().toString());
+                }
             }
             if (q.getOperator() instanceof Operator.Move) {
             	RegisterOperand dest = Operator.Move.getDest(q);
             	if (val.contains(dest.getRegister().toString()) && Operator.Move.getSrc(q) instanceof RegisterOperand) {
             		val.genVar(((RegisterOperand)Operator.Move.getSrc(q)).getRegister().toString());
             	}
-            }	else if (q.getOperator() instanceof Operator.Binary) {
+            }else if (q.getOperator() instanceof Operator.Binary) {
             	RegisterOperand dest = Operator.Move.getDest(q);
             	if (val.contains(dest.getRegister().toString())){
             		if(Operator.Binary.getSrc1(q) instanceof RegisterOperand) {
