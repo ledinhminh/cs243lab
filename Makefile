@@ -29,3 +29,7 @@ clean:
 	rm -rf classes
 	rm -rf bin/parun
 	rm -rf lib/parun.jar
+
+test:
+	bin/parun optimize.FindRedundantNullChecks test.NullTest | diff -b src/test/NullTest.basic.out - 
+	bin/parun optimize.FindRedundantNullChecks test.SkipList| diff -b src/test/SkipList.basic.out - 
