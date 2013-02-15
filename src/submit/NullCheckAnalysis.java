@@ -6,11 +6,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.ArrayList;
+import java.util.Collections;
 
 import joeq.Compiler.Quad.*;
 import joeq.Compiler.Quad.Operand.RegisterOperand;
 import flow.Flow;
-import flow.Liveness.VarSet;
 /**
  * Skeleton class for implementing a faint variable analysis
  * using the Flow.Analysis interface.
@@ -43,7 +44,7 @@ public class NullCheckAnalysis implements Flow.Analysis {
 
         
         public void setToTop() {
-            set = new TreeSet<String>(VarSet.universalSet);
+            set = new TreeSet<String>(MyDataflowObject.universalSet);
         }
 
         public void meetWith(Flow.DataflowObject o) {
@@ -108,7 +109,6 @@ public class NullCheckAnalysis implements Flow.Analysis {
      */
     public void preprocess(ControlFlowGraph cfg) {
         // this line must come first.
-        System.out.println("Method: "+cfg.getMethod().getName().toString());
 
         // get the amount of space we need to allocate for the in/out arrays.
         QuadIterator qit = new QuadIterator(cfg);
@@ -139,20 +139,20 @@ public class NullCheckAnalysis implements Flow.Analysis {
         /************************************************
          * Your remaining initialization code goes here *
          ************************************************/
-        VarSet.universalSet = new TreeSet<String>();
+        MyDataflowObject.universalSet = new TreeSet<String>();
         int numargs = cfg.getMethod().getParamTypes().length;
         for (int i = 0; i < numargs; i++) {
-        	VarSet.universalSet.add("R"+i);
+        	MyDataflowObject.universalSet.add("R"+i);
         }
         
         qit = new QuadIterator(cfg);
         while (qit.hasNext()) {
           Quad q = qit.next();
           for (RegisterOperand def : q.getDefinedRegisters()) {
-        	  VarSet.universalSet.add(def.getRegister().toString());
+        	  MyDataflowObject.universalSet.add(def.getRegister().toString());
           }
           for (RegisterOperand use : q.getUsedRegisters()) {
-        	  VarSet.universalSet.add(use.getRegister().toString());
+        	  MyDataflowObject.universalSet.add(use.getRegister().toString());
           }
           
         }
@@ -169,21 +169,27 @@ public class NullCheckAnalysis implements Flow.Analysis {
      * @param cfg  Unused.
      */
     public void postprocess (ControlFlowGraph cfg) {
-    	System.out.print(cfg.getMethod().getName() + ":");
+    	System.out.print(cfg.getMethod().getName());
         QuadIterator qit = new QuadIterator(cfg);
+        ArrayList<Integer> sorted=new ArrayList<Integer>();
         while (qit.hasNext()) {
             Quad q = qit.next();
             if (q.getOperator() instanceof Operator.NullCheck){
         		for (RegisterOperand use : q.getUsedRegisters()) {
         			if (((MyDataflowObject) this.getIn(q)).contains(use.getRegister().toString()))
         			{
-        				System.out.print(q.getID() + " ");
+                        sorted.add(q.getID());
         				
         			}
         				
         		}
         	} 
         }
+        Collections.sort(sorted);
+        for(Integer id:sorted){
+            System.out.print(" "+ id);
+        }
+        System.out.println("");
     }
 
     /**
