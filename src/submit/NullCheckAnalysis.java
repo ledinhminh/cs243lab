@@ -156,6 +156,11 @@ public class NullCheckAnalysis implements Flow.Analysis {
           }
           
         }
+        qit = new QuadIterator(cfg);
+        while (qit.hasNext()) {
+            int id = qit.next().getID();
+            out[id].setToTop();
+        }
 
     }
 
@@ -254,7 +259,7 @@ public class NullCheckAnalysis implements Flow.Analysis {
     	transferfn.val.copy(in[q.getID()]);
         transferfn.visitQuad(q);
         out[q.getID()].copy(transferfn.val);
-        //System.out.println(val);
+        //System.out.println(transferfn.val);
     }
     private TransferFunction transferfn = new TransferFunction ();
     public static class TransferFunction extends QuadVisitor.EmptyVisitor {
