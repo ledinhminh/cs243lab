@@ -33,3 +33,7 @@ clean:
 test:
 	bin/parun optimize.FindRedundantNullChecks test.NullTest | diff -b src/test/NullTest.basic.out - 
 	bin/parun optimize.FindRedundantNullChecks test.SkipList| diff -b src/test/SkipList.basic.out - 
+
+sl:
+	bin/parun optimize.FindRedundantNullChecks test.SkipList
+	cat src/test/SkipList.basic.out
