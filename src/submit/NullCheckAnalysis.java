@@ -101,6 +101,9 @@ public class NullCheckAnalysis implements Flow.Analysis {
      */
     private MyDataflowObject[] in, out;
     private MyDataflowObject entry, exit;
+    public ArrayList<String> methodName=new ArrayList<String>();
+    public ArrayList<ArrayList<Integer>> removedQuads=
+        new ArrayList<ArrayList<Integer>>();
     
     /**
      * This method initializes the datflow framework.
@@ -174,7 +177,6 @@ public class NullCheckAnalysis implements Flow.Analysis {
      * @param cfg  Unused.
      */
     public void postprocess (ControlFlowGraph cfg) {
-    	System.out.print(cfg.getMethod().getName());
         QuadIterator qit = new QuadIterator(cfg);
         ArrayList<Integer> sorted=new ArrayList<Integer>();
         while (qit.hasNext()) {
@@ -184,6 +186,7 @@ public class NullCheckAnalysis implements Flow.Analysis {
         			if (((MyDataflowObject) this.getIn(q)).contains(use.getRegister().toString()))
         			{
                         sorted.add(q.getID());
+                        qit.remove();
         				
         			}
         				
@@ -191,10 +194,8 @@ public class NullCheckAnalysis implements Flow.Analysis {
         	} 
         }
         Collections.sort(sorted);
-        for(Integer id:sorted){
-            System.out.print(" "+ id);
-        }
-        System.out.println("");
+        removedQuads.add(sorted);
+        methodName.add(cfg.getMethod().getName().toString());
     }
 
     /**

@@ -33,6 +33,9 @@ clean:
 test:
 	bin/parun optimize.FindRedundantNullChecks test.NullTest | diff -b src/test/NullTest.basic.out - 
 	bin/parun optimize.FindRedundantNullChecks test.SkipList| diff -b src/test/SkipList.basic.out - 
+	bin/parun optimize.OptimizeHarness --optimize test.SkipList --run-main test.SkipList --run-param 20
+	@echo ""
+	bin/parun optimize.OptimizeHarness --optimize test.QuickSort --run-main test.QuickSort --run-param 200
 
 sl:
 	bin/parun optimize.FindRedundantNullChecks test.SkipList

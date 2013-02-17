@@ -16,7 +16,7 @@ public class FindRedundantNullChecks {
      */
     public static void main(String[] args) {
     	Solver solver = new MySolver();
-    	Analysis analysis = new NullCheckAnalysis();
+    	NullCheckAnalysis analysis = new NullCheckAnalysis();
     	// get the classes we will be visiting.
         jq_Class[] classes = new jq_Class[args.length];
         for (int i=0; i < classes.length; i++)
@@ -28,6 +28,15 @@ public class FindRedundantNullChecks {
         // visit each of the specified classes with the solver.
         for (int i=0; i < classes.length; i++) {
             Helper.runPass(classes[i], solver);
+            
+            for(int j=0;j<analysis.methodName.size();j++){ 
+                System.out.print(analysis.methodName.get(j));
+                for(Integer id : analysis.removedQuads.get(j)){
+                    System.out.print(" "+ id);
+                }
+                System.out.println("");
+                }
         }
+
     }
 }
