@@ -39,6 +39,5 @@ test:
 	bin/parun optimize.OptimizeHarness --optimize test.QuickSort --run-main test.QuickSort --run-param 200
 	@echo "===Expected: (32023, 136224)"
 
-sl:
-	bin/parun optimize.FindRedundantNullChecks test.SkipList
-	cat src/test/SkipList.basic.out
+ex:
+	bin/parun optimize.OptimizeHarness --extra-credit --optimize test.QuickSort --run-main test.QuickSort --run-param 200

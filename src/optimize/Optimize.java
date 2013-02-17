@@ -7,6 +7,7 @@ import flow.Flow.Analysis;
 import flow.Flow.Solver;
 import submit.MySolver;
 import submit.NullCheckAnalysis;
+import submit.BoundCheckAnalysis;
 
 public class Optimize {
     /*
@@ -16,7 +17,8 @@ public class Optimize {
     public static void optimize(List<String> optimizeFiles, boolean nullCheckOnly) {
     	Solver solver = new MySolver();
     	Analysis[] as = {
-            new NullCheckAnalysis() //Add extra credit analysis below
+            new NullCheckAnalysis(), //Add extra credit analysis below
+            new BoundCheckAnalysis()
         };
         for (int i = 0; i < optimizeFiles.size(); i++) {
             jq_Class classes = (jq_Class)Helper.load(optimizeFiles.get(i));
