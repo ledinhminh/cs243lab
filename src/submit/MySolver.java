@@ -1,7 +1,6 @@
 package submit;
 
 import joeq.Compiler.Quad.*;
-import jwutil.graphs.Navigator;
 import flow.Flow;
 import flow.Flow.DataflowObject;
 
@@ -55,6 +54,7 @@ public class MySolver implements Flow.Solver {
 	            			if (q1 != null) {
 		            			if (analysis.isForward()) {
 		            				d_obj.copy(analysis.getOut(q1));
+                                    //System.out.print(q1.getID()+" ");
 		            			} else {
 		            				d_obj.copy(analysis.getIn(q1));
 		            			}
@@ -69,6 +69,7 @@ public class MySolver implements Flow.Solver {
 		            		if (q1 != null) {
 		            			if (analysis.isForward()) {
 		            				d_obj.meetWith(analysis.getOut(q1));
+                                    //System.out.print(q1.getID()+" ");
 		            			} else {
 		            				d_obj.meetWith(analysis.getIn(q1));
 		            			}
@@ -81,6 +82,7 @@ public class MySolver implements Flow.Solver {
 	                        }
 	            		}
 	        	}
+                //System.out.println();
                 if(buildTerminals){
 	        	    if (analysis.isForward()){
 	        		    meets = qit.successors();       		

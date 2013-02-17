@@ -5,9 +5,11 @@ import joeq.Class.jq_Class;
 import joeq.Main.Helper;
 import flow.Flow.Analysis;
 import flow.Flow.Solver;
+import submit.AStoreCheckAnalysis;
 import submit.MySolver;
 import submit.NullCheckAnalysis;
 import submit.BoundCheckAnalysis;
+import submit.ZeroCheckAnalysis;
 
 public class Optimize {
     /*
@@ -17,8 +19,11 @@ public class Optimize {
     public static void optimize(List<String> optimizeFiles, boolean nullCheckOnly) {
     	Solver solver = new MySolver();
     	Analysis[] as = {
-            new NullCheckAnalysis(), //Add extra credit analysis below
-            new BoundCheckAnalysis()
+            new NullCheckAnalysis(),
+            /* Add extra credit analysis below */
+            new BoundCheckAnalysis(),
+            new AStoreCheckAnalysis(),
+            new ZeroCheckAnalysis(),
         };
         for (int i = 0; i < optimizeFiles.size(); i++) {
             jq_Class classes = (jq_Class)Helper.load(optimizeFiles.get(i));

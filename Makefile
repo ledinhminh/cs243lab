@@ -41,3 +41,4 @@ test:
 
 ex:
 	bin/parun optimize.OptimizeHarness --extra-credit --optimize test.QuickSort --run-main test.QuickSort --run-param 200
+	bin/parun optimize.OptimizeHarness --extra-credit --optimize test.SkipList --run-main test.SkipList --run-param 20

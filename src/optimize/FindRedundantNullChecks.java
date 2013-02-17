@@ -2,7 +2,6 @@ package optimize;
 
 import submit.MySolver;
 import submit.NullCheckAnalysis;
-import flow.Flow.Analysis;
 import flow.Flow.Solver;
 import joeq.Class.jq_Class;
 import joeq.Main.Helper;

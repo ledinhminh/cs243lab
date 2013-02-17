@@ -12,7 +12,7 @@ import flow.Flow;
  * Skeleton class for implementing a faint variable analysis
  * using the Flow.Analysis interface.
  */
-public class NullCheckAnalysis implements Flow.Analysis {
+public class ZeroCheckAnalysis implements Flow.Analysis {
 
     /**
      * Class for the dataflow objects in the Faintness analysis.
@@ -177,7 +177,7 @@ public class NullCheckAnalysis implements Flow.Analysis {
         ArrayList<Integer> sorted=new ArrayList<Integer>();
         while (qit.hasNext()) {
             Quad q = qit.next();
-            if (q.getOperator() instanceof Operator.NullCheck){
+            if (q.getOperator() instanceof Operator.ZeroCheck){
         		for (RegisterOperand use : q.getUsedRegisters()) {
         			if (((MyDataflowObject) this.getIn(q)).contains(use.getRegister().toString()))
         			{
@@ -192,6 +192,8 @@ public class NullCheckAnalysis implements Flow.Analysis {
         Collections.sort(sorted);
         removedQuads.add(sorted);
         methodName.add(cfg.getMethod().getName().toString());
+		System.out.print("Zero: " + cfg.getMethod().getName() + " ");
+		System.out.println(sorted);
     }
 
     /**
@@ -264,7 +266,7 @@ public class NullCheckAnalysis implements Flow.Analysis {
 
         @Override
         public void visitQuad(Quad q) {
-        	if (q.getOperator() instanceof Operator.NullCheck){
+        	if (q.getOperator() instanceof Operator.ZeroCheck){
         		for (RegisterOperand def : q.getUsedRegisters()) {
         			val.genVar(def.getRegister().toString());
         		}
