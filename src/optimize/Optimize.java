@@ -15,11 +15,16 @@ public class Optimize {
      */
     public static void optimize(List<String> optimizeFiles, boolean nullCheckOnly) {
     	Solver solver = new MySolver();
-    	Analysis[] as = {new NullCheckAnalysis()};
+    	Analysis[] as = {
+            new NullCheckAnalysis() //Add extra credit analysis below
+        };
         for (int i = 0; i < optimizeFiles.size(); i++) {
             jq_Class classes = (jq_Class)Helper.load(optimizeFiles.get(i));
             // Run your optimization on each classes.
             for(Analysis a:as){
+                if(nullCheckOnly && !(a instanceof NullCheckAnalysis)){
+                    continue;
+                }
                 solver.registerAnalysis(a);
                 Helper.runPass(classes, solver);
             }

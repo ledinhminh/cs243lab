@@ -34,8 +34,10 @@ test:
 	bin/parun optimize.FindRedundantNullChecks test.NullTest | diff -b src/test/NullTest.basic.out - 
 	bin/parun optimize.FindRedundantNullChecks test.SkipList| diff -b src/test/SkipList.basic.out - 
 	bin/parun optimize.OptimizeHarness --optimize test.SkipList --run-main test.SkipList --run-param 20
+	@echo "===Expected: (24551, 106407)"
 	@echo ""
 	bin/parun optimize.OptimizeHarness --optimize test.QuickSort --run-main test.QuickSort --run-param 200
+	@echo "===Expected: (32023, 136224)"
 
 sl:
 	bin/parun optimize.FindRedundantNullChecks test.SkipList
