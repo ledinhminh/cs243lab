@@ -3,6 +3,7 @@ package optimize;
 import java.util.List;
 import joeq.Class.jq_Class;
 import joeq.Main.Helper;
+import flow.ConstantProp;
 import flow.Flow.Analysis;
 import flow.Flow.Solver;
 import submit.AStoreCheckAnalysis;
@@ -24,6 +25,7 @@ public class Optimize {
             new BoundCheckAnalysis(),
             new AStoreCheckAnalysis(),
             new ZeroCheckAnalysis(),
+            new ConstantProp(),
         };
         for (int i = 0; i < optimizeFiles.size(); i++) {
             jq_Class classes = (jq_Class)Helper.load(optimizeFiles.get(i));

@@ -1,6 +1,10 @@
 package flow;
 
 import java.util.*;
+
+import submit.NullCheckAnalysis.MyDataflowObject;
+
+import flow.ConstantProp.SingleCP;
 import joeq.Compiler.Quad.*;
 import joeq.Compiler.Quad.Operand.*;
 import joeq.Main.Helper;
@@ -98,7 +102,7 @@ public class ConstantProp implements Flow.Analysis {
                 map.put(key, new SingleCP());
             }
         }
-
+        
         public void setToTop() {
             for (SingleCP lattice : map.values()) {
                 lattice.setToTop();
@@ -212,12 +216,36 @@ public class ConstantProp implements Flow.Analysis {
     }
 
     public void postprocess (ControlFlowGraph cfg) {
-        System.out.println("entry: "+entry.toString());
-        for (int i=0; i<in.length; i++) {
-            System.out.println(i+" in:  "+in[i].toString());
-            System.out.println(i+" out: "+out[i].toString());
+    	QuadIterator qit = new QuadIterator(cfg);
+        ArrayList<Integer> sorted=new ArrayList<Integer>();
+        while (qit.hasNext()) {
+            Quad q = qit.next();
+            ConstantPropTable cpt = out[q.getID()];
+            int i = 0;
+            HashSet<String> defs = new HashSet<String>();
+            for (RegisterOperand def : q.getDefinedRegisters()) {
+    			defs.add(def.getRegister().toString());
+    		}
+            for (Operand o : q.getAllOperands()) {
+            	if (o instanceof RegisterOperand) {
+            		RegisterOperand r = (RegisterOperand) o;
+            		if ((!defs.contains(r.getRegister().toString())) && (cpt.get(r.getRegister().toString()).isConst())) {
+            			IConstOperand c = new IConstOperand(cpt.get(r.getRegister().toString()).getConst());
+            			switch (i) {
+	            			case 0:q.setOp1(c);
+	            				break;
+	            			case 1:q.setOp2(c);
+	            				break;
+	            			case 2:q.setOp3(c);
+	            				break;
+	            			case 3:q.setOp4(c);
+	            				break;
+            			}
+                	}
+            	}
+            	i ++;
+            }
         }
-        System.out.println("exit: "+exit.toString());
     }
 
     /* Is this a forward dataflow analysis? */
