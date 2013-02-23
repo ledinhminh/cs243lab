@@ -7,6 +7,8 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import submit.NullCheckAnalysis.MyDataflowObject;
+
 import joeq.Compiler.Quad.*;
 import joeq.Compiler.Quad.Operand.RegisterOperand;
 import flow.Flow;
@@ -170,14 +172,24 @@ public class Faintness implements Flow.Analysis {
      * @param cfg  Unused.
      */
     public void postprocess (ControlFlowGraph cfg) {
-        System.out.println("entry: " + entry.toString());
-        for (int i=0; i<in.length; i++) {
-            if (in[i] != null) {
-                System.out.println(i + " in:  " + in[i].toString());
-                System.out.println(i + " out: " + out[i].toString());
-            }
+    	QuadIterator qit = new QuadIterator(cfg);
+    	while (qit.hasNext()) {
+            Quad q = qit.next();
+            if (q.getOperator() instanceof Operator.NullCheck){
+            	boolean faintness = true;
+            	for (Operand o : q.getAllOperands()) {
+    				if (o instanceof RegisterOperand) {
+    					RegisterOperand r = (RegisterOperand) o;
+    					if (!((MyDataflowObject) this.getOut(q)).contains(r.getRegister().toString())) {
+    						faintness = false;
+    						break;
+    					}
+    				}
+    			
+        		}
+        	} 
+            qit.remove();
         }
-        System.out.println("exit: " + exit.toString());
     }
 
     /**
