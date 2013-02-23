@@ -259,24 +259,24 @@ public class ConstantProp implements Flow.Analysis {
 		QuadIterator qit = new QuadIterator(cfg);
 		while (qit.hasNext()) {
 			Quad q = qit.next();
-			String oldq=q.toString();
-			boolean changed=false;
+			String oldq = q.toString();
+			boolean changed = false;
 			ConstantPropTable cpt = out[q.getID()];
 			HashSet<String> defs = new HashSet<String>();
 			for (RegisterOperand def : q.getDefinedRegisters()) {
 				defs.add(def.getRegister().toString());
 			}
-			System.out.println(cpt);
-			UnmodifiableList.Operand ops=q.getAllOperands();
-			for (int i=0;i<ops.size();i++) {
-				Operand o=ops.getOperand(i);
+
+			UnmodifiableList.Operand ops = q.getAllOperands();
+			for (int i = 0; i < ops.size(); i++) {
+				Operand o = ops.getOperand(i);
 				if (o instanceof RegisterOperand) {
-					RegisterOperand r = (RegisterOperand) o;		
+					RegisterOperand r = (RegisterOperand) o;
 					if ((!defs.contains(r.getRegister().toString()))
 							&& (cpt.get(r.getRegister().toString()).isConst())) {
 						IConstOperand c = new IConstOperand(cpt.get(
 								r.getRegister().toString()).getConst());
-						changed=true;
+						changed = true;
 						switch (i) {
 						case 0:
 							q.setOp1(c);
@@ -291,11 +291,10 @@ public class ConstantProp implements Flow.Analysis {
 							q.setOp4(c);
 							break;
 						}
-						
 					}
 				}
 			}
-			if(Optimize.debug && changed){
+			if (Optimize.debug && changed) {
 				System.out.println(oldq);
 				System.out.println(q);
 			}
@@ -397,6 +396,14 @@ public class ConstantProp implements Flow.Analysis {
 					val.setUndef(key);
 				} else { // both must be constant!
 					val.setConst(key, getConst(op1) + getConst(op2));
+				}
+			} else if (opr == Operator.Binary.SUB_I.INSTANCE) {
+				if (isNAC(op1) || isNAC(op2)) {
+					val.setNAC(key);
+				} else if (isUndef(op1) || isUndef(op2)) {
+					val.setUndef(key);
+				} else { // both must be constant!
+					val.setConst(key, getConst(op1) - getConst(op2));
 				}
 			} else {
 				val.setNAC(key);
