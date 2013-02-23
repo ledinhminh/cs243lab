@@ -183,7 +183,7 @@ public class CommonExpressionAnalysis implements Flow.Analysis {
    
         			if (((MyDataflowObject) this.getIn(q)).contains(new Expression(q)))
         			{
-                        System.out.println(q);
+                       // System.out.println(q);
                         qit.remove();
         				
         			}
@@ -256,7 +256,7 @@ public class CommonExpressionAnalysis implements Flow.Analysis {
     	transferfn.val.copy(in[q.getID()]);
         transferfn.visitQuad(q);
         out[q.getID()].copy(transferfn.val);
-        System.out.println(transferfn.val);
+        //System.out.println(transferfn.val);
     }
     private TransferFunction transferfn = new TransferFunction ();
     public static class TransferFunction extends QuadVisitor.EmptyVisitor {
@@ -264,18 +264,23 @@ public class CommonExpressionAnalysis implements Flow.Analysis {
 
         @Override
         public void visitQuad(Quad q) {
-        	if (q.getOperator() instanceof Operator.Binary){
+        	
         		
         	
         		for (RegisterOperand def : q.getDefinedRegisters()) {
         			val.killVar(def.toString());
         		}
         		
-        		
-        		val.genVar(q);
+        		if (q.getOperator() instanceof Operator.Binary) {
+        			if (!q.getAllOperands().getOperand(1).toString().equals(q.getAllOperands().getOperand(0).toString()) &&
+        					!q.getAllOperands().getOperand(2).toString().equals(q.getAllOperands().getOperand(0).toString()))
+        			{
+        				val.genVar(q);
+        			}
+        		}
         		
         	}
             
-        }
+        
     }
 }
