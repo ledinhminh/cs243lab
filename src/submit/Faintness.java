@@ -177,24 +177,32 @@ public class Faintness implements Flow.Analysis {
     	while (qit.hasNext()) {
             Quad q = qit.next();
             	boolean faintness = true;
-            	for (Operand o : q.getAllOperands()) {
-    				if (o instanceof RegisterOperand) {
-    					RegisterOperand r = (RegisterOperand) o;
+            	for (RegisterOperand r : q.getDefinedRegisters()) {
+    					//RegisterOperand r = (RegisterOperand) o;
     					if (!((MyDataflowObject) this.getOut(q)).contains(r.getRegister().toString())) {
     						faintness = false;
     						break;
     					}
-    				}
+    				
     			
         		}
         	
             if ((faintness) && ((q.getOperator() instanceof Operator.NullCheck) ||
             		(q.getOperator() instanceof Operator.BoundsCheck) ||
-            		(q.getOperator() instanceof Operator.Binary.ADD_I) ||
-            		(q.getOperator() instanceof Operator.Binary.ADD_D)
+            		(q.getOperator() instanceof Operator.Binary) ||
+            		(q.getOperator() instanceof Operator.ZeroCheck) ||
+            		(q.getOperator() instanceof Operator.ALoad) ||
+            		(q.getOperator() instanceof Operator.StoreCheck)
+            		
             		
             		))
-            	{qit.remove(); }
+            	{qit.remove(); 
+            	if (q.getOperator() instanceof Operator.Binary.ADD_I) {
+            			System.out.println(q);
+            			System.out.println(this.getOut(q));
+            			System.out.println(this.getIn(q));
+            		}
+            	}
         }
     }
 
@@ -293,7 +301,7 @@ public class Faintness implements Flow.Analysis {
             	}
             }
             for (RegisterOperand def : q.getDefinedRegisters()) {
-            	if (!uses.contains(def))
+            	if (!uses.contains(def.getRegister().toString()))
             		val.genVar(def.getRegister().toString());
             }
         }
