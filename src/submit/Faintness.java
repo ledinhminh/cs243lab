@@ -11,6 +11,9 @@ import submit.NullCheckAnalysis.MyDataflowObject;
 
 import joeq.Compiler.Quad.*;
 import joeq.Compiler.Quad.Operand.RegisterOperand;
+import joeq.Compiler.Quad.Operator.Binary.XOR_L;
+import joeq.Compiler.Quad.Operator.BoundsCheck.BOUNDS_CHECK;
+import joeq.Compiler.Quad.Operator.NullCheck.NULL_CHECK;
 import flow.Flow;
 import flow.Liveness.VarSet;
 /**
@@ -109,8 +112,6 @@ public class Faintness implements Flow.Analysis {
      * @param cfg  The control flow graph we are going to process.
      */
     public void preprocess(ControlFlowGraph cfg) {
-        // this line must come first.
-        System.out.println("Method: "+cfg.getMethod().getName().toString());
 
         // get the amount of space we need to allocate for the in/out arrays.
         QuadIterator qit = new QuadIterator(cfg);
@@ -175,7 +176,6 @@ public class Faintness implements Flow.Analysis {
     	QuadIterator qit = new QuadIterator(cfg);
     	while (qit.hasNext()) {
             Quad q = qit.next();
-            if (q.getOperator() instanceof Operator.NullCheck){
             	boolean faintness = true;
             	for (Operand o : q.getAllOperands()) {
     				if (o instanceof RegisterOperand) {
@@ -187,8 +187,14 @@ public class Faintness implements Flow.Analysis {
     				}
     			
         		}
-        	} 
-            qit.remove();
+        	
+            if ((faintness) && ((q.getOperator() instanceof Operator.NullCheck) ||
+            		(q.getOperator() instanceof Operator.BoundsCheck) ||
+            		(q.getOperator() instanceof Operator.Binary.ADD_I) ||
+            		(q.getOperator() instanceof Operator.Binary.ADD_D)
+            		
+            		))
+            	{qit.remove(); }
         }
     }
 
