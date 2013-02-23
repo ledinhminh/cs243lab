@@ -293,7 +293,7 @@ public class ConstantProp implements Flow.Analysis {
 					}
 				}
 			}
-			if (Optimize.debug && changed) {
+			if (Optimize.debug) {
 				System.out.println(oldq);
 				System.out.println(q);
 			}
