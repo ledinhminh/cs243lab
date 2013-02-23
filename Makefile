@@ -40,9 +40,9 @@ test:
 	@echo "===Expected: (32023, 136224)"
 
 ex:
-	bin/parun optimize.OptimizeHarness --extra-credit --optimize test.QuickSort --run-main test.QuickSort --run-param 200 > exQS
-	bin/parun optimize.OptimizeHarness --optimize test.QuickSort --run-main test.QuickSort --run-param 200 > QS
+	bin/parun optimize.OptimizeHarness --extra-credit --optimize test.QuickSort --run-main test.QuickSort --run-param 251 > exQS
+	bin/parun optimize.OptimizeHarness --optimize test.QuickSort --run-main test.QuickSort --run-param 251 > QS
 	- diff exQS QS
-	bin/parun optimize.OptimizeHarness --extra-credit --optimize test.SkipList --run-main test.SkipList --run-param 20 > exSL
-	bin/parun optimize.OptimizeHarness --optimize test.SkipList --run-main test.SkipList --run-param 20 > SL
+	bin/parun optimize.OptimizeHarness --extra-credit --optimize test.SkipList --run-main test.SkipList --run-param 43 > exSL
+	bin/parun optimize.OptimizeHarness --optimize test.SkipList --run-main test.SkipList --run-param 43 > SL
 	- diff exSL SL
