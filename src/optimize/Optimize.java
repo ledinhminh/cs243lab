@@ -6,6 +6,7 @@ import joeq.Main.Helper;
 import flow.Flow.Analysis;
 import flow.Flow.Solver;
 import submit.AStoreCheckAnalysis;
+import submit.CommonExpressionAnalysis;
 import submit.ConstantProp;
 import submit.Faintness;
 import submit.MySolver;
@@ -29,7 +30,8 @@ public class Optimize {
             new AStoreCheckAnalysis(),
             new ZeroCheckAnalysis(),
             new ConstantProp(),
-            new Faintness()
+            new Faintness(),
+            new CommonExpressionAnalysis()
         };
         for (int i = 0; i < optimizeFiles.size(); i++) {
             jq_Class classes = (jq_Class)Helper.load(optimizeFiles.get(i));
