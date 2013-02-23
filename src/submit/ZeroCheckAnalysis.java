@@ -5,6 +5,8 @@ import java.util.TreeSet;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import optimize.Optimize;
+
 import joeq.Compiler.Quad.*;
 import joeq.Compiler.Quad.Operand.RegisterOperand;
 import flow.Flow;
@@ -192,8 +194,10 @@ public class ZeroCheckAnalysis implements Flow.Analysis {
         Collections.sort(sorted);
         removedQuads.add(sorted);
         methodName.add(cfg.getMethod().getName().toString());
-		System.out.print("Zero: " + cfg.getMethod().getName() + " ");
-		System.out.println(sorted);
+		if(Optimize.debug){
+			System.out.print("Zero: " + cfg.getMethod().getName() + " ");
+			System.out.println(sorted);
+		}
     }
 
     /**

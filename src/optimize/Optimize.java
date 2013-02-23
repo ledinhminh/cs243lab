@@ -3,10 +3,10 @@ package optimize;
 import java.util.List;
 import joeq.Class.jq_Class;
 import joeq.Main.Helper;
-import flow.ConstantProp;
 import flow.Flow.Analysis;
 import flow.Flow.Solver;
 import submit.AStoreCheckAnalysis;
+import submit.ConstantProp;
 import submit.MySolver;
 import submit.NullCheckAnalysis;
 import submit.BoundCheckAnalysis;
@@ -17,6 +17,8 @@ public class Optimize {
      * optimizeFiles is a list of names of class that should be optimized
      * if nullCheckOnly is true, disable all optimizations except "remove redundant NULL_CHECKs."
      */
+	public static final boolean debug=false;
+	
     public static void optimize(List<String> optimizeFiles, boolean nullCheckOnly) {
     	Solver solver = new MySolver();
     	Analysis[] as = {

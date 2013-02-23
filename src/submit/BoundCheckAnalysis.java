@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 
+import optimize.Optimize;
+
 import joeq.Compiler.Quad.*;
 import joeq.Compiler.Quad.Operand.*;
 import joeq.Compiler.Quad.Operator.BoundsCheck;
@@ -210,8 +212,10 @@ public class BoundCheckAnalysis implements Flow.Analysis {
 		Collections.sort(sorted);
 		removedQuads.add(sorted);
 		methodName.add(cfg.getMethod().getName().toString());
-		System.out.print("Bounds: " + cfg.getMethod().getName() + " ");
-		System.out.println(sorted);
+		if(Optimize.debug){
+			System.out.print("Bounds: " + cfg.getMethod().getName() + " ");
+			System.out.println(sorted);
+		}
 
 	}
 
