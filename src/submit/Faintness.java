@@ -196,12 +196,8 @@ public class Faintness implements Flow.Analysis {
             		
             		
             		))
-            	{qit.remove(); 
-            	if (q.getOperator() instanceof Operator.Binary.ADD_I) {
-            			System.out.println(q);
-            			System.out.println(this.getOut(q));
-            			System.out.println(this.getIn(q));
-            		}
+            	{
+            		qit.remove(); 
             	}
         }
     }
