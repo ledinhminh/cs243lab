@@ -266,7 +266,7 @@ public class ConstantProp implements Flow.Analysis {
 			for (RegisterOperand def : q.getDefinedRegisters()) {
 				defs.add(def.getRegister().toString());
 			}
-			System.out.println(cpt);
+			//System.out.println(cpt);
 			UnmodifiableList.Operand ops=q.getAllOperands();
 			for (int i=0;i<ops.size();i++) {
 				Operand o=ops.getOperand(i);

@@ -18,7 +18,7 @@ public class Optimize {
      * optimizeFiles is a list of names of class that should be optimized
      * if nullCheckOnly is true, disable all optimizations except "remove redundant NULL_CHECKs."
      */
-	public static final boolean debug=true;
+	public static final boolean debug=false;
 	
     public static void optimize(List<String> optimizeFiles, boolean nullCheckOnly) {
     	Solver solver = new MySolver();
@@ -29,7 +29,7 @@ public class Optimize {
             new AStoreCheckAnalysis(),
             new ZeroCheckAnalysis(),
             new ConstantProp(),
-            //new Faintness()
+            new Faintness()
         };
         for (int i = 0; i < optimizeFiles.size(); i++) {
             jq_Class classes = (jq_Class)Helper.load(optimizeFiles.get(i));
