@@ -1,0 +1,68 @@
+In the CS case, the MaleRecord.name has only 1 possible pointer to a name
+string. In the non-CS case, the MaleRecord can now point to 4 possible names,
+because in AddressBook, we created 5 Records using 4 different names. Each
+creation will use the code in Record class, regardless of Male or Female.
+Therefore when we ignore context, the name field can have 4 possible values
+depending on the calling context. Other relations suffer from the same
+inprecision problem.
+
+global(null) || AddressBook/joe || AddressBook.java:37 Concrete: String @ 1
+global(null) || AddressBook/joeEmail || AddressBook.java:38 Concrete: String @ 2
+global(null) || AddressBook/joeAltEmail || AddressBook.java:39 Concrete: String @ 3
+global(null) || AddressBook/mary || AddressBook.java:41 Concrete: String @ 4
+global(null) || AddressBook/maryEmail || AddressBook.java:42 Concrete: String @ 5
+global(null) || AddressBook/bob || AddressBook.java:44 Concrete: String @ 6
+global(null) || AddressBook/bobEmail || AddressBook.java:45 Concrete: String @ 7
+global(null) || AddressBook/jane || AddressBook.java:47 Concrete: String @ 8
+global(null) || AddressBook/janeEmail || AddressBook.java:48 Concrete: String @ 9
+global(null) || AddressBook/mainAddressBook || AddressBook.java:61 Concrete: AddressBook @ 1
+AddressBook.java:63 Concrete: MaleRecord @ 6 || Record/name || AddressBook.java:37 Concrete: String @ 1
+AddressBook.java:63 Concrete: MaleRecord @ 6 || Record/name || AddressBook.java:41 Concrete: String @ 4
+AddressBook.java:63 Concrete: MaleRecord @ 6 || Record/name || AddressBook.java:44 Concrete: String @ 6
+AddressBook.java:63 Concrete: MaleRecord @ 6 || Record/name || AddressBook.java:47 Concrete: String @ 8
+AddressBook.java:64 Concrete: MaleRecord @ 13 || Record/name || AddressBook.java:37 Concrete: String @ 1
+AddressBook.java:66 Concrete: FemaleRecord @ 20 || Record/name || AddressBook.java:37 Concrete: String @ 1
+AddressBook.java:67 Concrete: FemaleRecord @ 27 || Record/name || AddressBook.java:37 Concrete: String @ 1
+AddressBook.java:69 Concrete: MaleRecord @ 34 || Record/name || AddressBook.java:37 Concrete: String @ 1
+AddressBook.java:64 Concrete: MaleRecord @ 13 || Record/name || AddressBook.java:41 Concrete: String @ 4
+AddressBook.java:64 Concrete: MaleRecord @ 13 || Record/name || AddressBook.java:44 Concrete: String @ 6
+AddressBook.java:66 Concrete: FemaleRecord @ 20 || Record/name || AddressBook.java:41 Concrete: String @ 4
+AddressBook.java:66 Concrete: FemaleRecord @ 20 || Record/name || AddressBook.java:44 Concrete: String @ 6
+AddressBook.java:67 Concrete: FemaleRecord @ 27 || Record/name || AddressBook.java:41 Concrete: String @ 4
+AddressBook.java:67 Concrete: FemaleRecord @ 27 || Record/name || AddressBook.java:44 Concrete: String @ 6
+AddressBook.java:69 Concrete: MaleRecord @ 34 || Record/name || AddressBook.java:41 Concrete: String @ 4
+AddressBook.java:69 Concrete: MaleRecord @ 34 || Record/name || AddressBook.java:44 Concrete: String @ 6
+AddressBook.java:64 Concrete: MaleRecord @ 13 || Record/name || AddressBook.java:47 Concrete: String @ 8
+AddressBook.java:66 Concrete: FemaleRecord @ 20 || Record/name || AddressBook.java:47 Concrete: String @ 8
+AddressBook.java:67 Concrete: FemaleRecord @ 27 || Record/name || AddressBook.java:47 Concrete: String @ 8
+AddressBook.java:69 Concrete: MaleRecord @ 34 || Record/name || AddressBook.java:47 Concrete: String @ 8
+AddressBook.java:63 Concrete: MaleRecord @ 6 || Record/emailAddr || AddressBook.java:38 Concrete: String @ 2
+AddressBook.java:63 Concrete: MaleRecord @ 6 || Record/emailAddr || AddressBook.java:39 Concrete: String @ 3
+AddressBook.java:63 Concrete: MaleRecord @ 6 || Record/emailAddr || AddressBook.java:42 Concrete: String @ 5
+AddressBook.java:63 Concrete: MaleRecord @ 6 || Record/emailAddr || AddressBook.java:45 Concrete: String @ 7
+AddressBook.java:64 Concrete: MaleRecord @ 13 || Record/emailAddr || AddressBook.java:38 Concrete: String @ 2
+AddressBook.java:64 Concrete: MaleRecord @ 13 || Record/emailAddr || AddressBook.java:39 Concrete: String @ 3
+AddressBook.java:66 Concrete: FemaleRecord @ 20 || Record/emailAddr || AddressBook.java:38 Concrete: String @ 2
+AddressBook.java:66 Concrete: FemaleRecord @ 20 || Record/emailAddr || AddressBook.java:39 Concrete: String @ 3
+AddressBook.java:67 Concrete: FemaleRecord @ 27 || Record/emailAddr || AddressBook.java:38 Concrete: String @ 2
+AddressBook.java:67 Concrete: FemaleRecord @ 27 || Record/emailAddr || AddressBook.java:39 Concrete: String @ 3
+AddressBook.java:69 Concrete: MaleRecord @ 34 || Record/emailAddr || AddressBook.java:38 Concrete: String @ 2
+AddressBook.java:69 Concrete: MaleRecord @ 34 || Record/emailAddr || AddressBook.java:39 Concrete: String @ 3
+AddressBook.java:64 Concrete: MaleRecord @ 13 || Record/emailAddr || AddressBook.java:42 Concrete: String @ 5
+AddressBook.java:64 Concrete: MaleRecord @ 13 || Record/emailAddr || AddressBook.java:45 Concrete: String @ 7
+AddressBook.java:66 Concrete: FemaleRecord @ 20 || Record/emailAddr || AddressBook.java:42 Concrete: String @ 5
+AddressBook.java:66 Concrete: FemaleRecord @ 20 || Record/emailAddr || AddressBook.java:45 Concrete: String @ 7
+AddressBook.java:67 Concrete: FemaleRecord @ 27 || Record/emailAddr || AddressBook.java:42 Concrete: String @ 5
+AddressBook.java:67 Concrete: FemaleRecord @ 27 || Record/emailAddr || AddressBook.java:45 Concrete: String @ 7
+AddressBook.java:69 Concrete: MaleRecord @ 34 || Record/emailAddr || AddressBook.java:42 Concrete: String @ 5
+AddressBook.java:69 Concrete: MaleRecord @ 34 || Record/emailAddr || AddressBook.java:45 Concrete: String @ 7
+AddressBook.java:61 Concrete: AddressBook @ 1 || AddressBook/records || AddressBook.java:53 Concrete: LinkedList @ 3
+AddressBook.java:53 Concrete: LinkedList @ 3 || java/util/LinkedList/header || LinkedList.java:95 Concrete: LinkedList$Entry @ 3
+LinkedList.java:95 Concrete: LinkedList$Entry @ 3 || java/util/LinkedList/Entry/element || AddressBook.java:63 Concrete: MaleRecord @ 6
+LinkedList.java:95 Concrete: LinkedList$Entry @ 3 || java/util/LinkedList/Entry/element || AddressBook.java:66 Concrete: FemaleRecord @ 20
+LinkedList.java:95 Concrete: LinkedList$Entry @ 3 || java/util/LinkedList/Entry/element || AddressBook.java:67 Concrete: FemaleRecord @ 27
+LinkedList.java:95 Concrete: LinkedList$Entry @ 3 || java/util/LinkedList/Entry/element || AddressBook.java:69 Concrete: MaleRecord @ 34
+LinkedList.java:795 Concrete: LinkedList$Entry @ 1 || java/util/LinkedList/Entry/element || AddressBook.java:63 Concrete: MaleRecord @ 6
+LinkedList.java:795 Concrete: LinkedList$Entry @ 1 || java/util/LinkedList/Entry/element || AddressBook.java:66 Concrete: FemaleRecord @ 20
+LinkedList.java:795 Concrete: LinkedList$Entry @ 1 || java/util/LinkedList/Entry/element || AddressBook.java:67 Concrete: FemaleRecord @ 27
+LinkedList.java:795 Concrete: LinkedList$Entry @ 1 || java/util/LinkedList/Entry/element || AddressBook.java:69 Concrete: MaleRecord @ 34
