@@ -1,0 +1,11 @@
+Useful parts:
+each line has format (h1,f1,h2,f2). If h1.f1 are different from h2.f2, it can
+be useful in debugging.
+
+Noisy parts:
+1. h1=h2 and f1=f2. Since each object is always an alias of itself. This is
+not useful.
+
+2. For each (h1,f1,h2,f2), there is a duplicate row, which swaps the order of
+the alias, ie (h2,f2,h1,f1). We only need one copy for debugging. 
+

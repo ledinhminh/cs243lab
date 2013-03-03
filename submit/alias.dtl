@@ -138,7 +138,7 @@ hP(h1,f,h2) :- S(v1,f,v2), cvP(vc1,v1,h1), cvP(vc1,v2,h2).
 cvP(vc1,v2,h2) :- L(v1,f,v2), cvP(vc1,v1,h1), hP(h1,f,h2), vPfilter(v2,h2). split
 vP(v, h) :- cvP(_, v, h).
 IE(i, m) :- IEcs (_,i,_,m).
-hALIAS(h1, f1, h2, f2) :- hP(h1, f1, h3), hP(h2, f2, h3).
 ### Insert your new rules below here:
+hALIAS(h1, f1, h2, f2) :- hP(h1, f1, h3), hP(h2, f2, h3).
 
 
