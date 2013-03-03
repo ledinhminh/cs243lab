@@ -1,0 +1,143 @@
+# CS243 Homework 5
+# Winter 2008
+# Philip Guo
+
+# This file implements a basic context-sensitive pointer analysis.
+# Its outputs are the following relations:
+#
+#  hP(ha, field, hb)  - field 'ha.field' in heap object 'ha' may point to heap object 'hb'
+#  vP(v, h)           - variable 'v' may point to heap object 'h'
+#  IE(invoke, target) - invocation site 'invoke' may call method 'target'
+
+# You will use this file as the basis for writing new relations and
+# rules in Datalog.
+
+
+# Based upon:
+### Context-sensitive inclusion-based pointer analysis using cloning
+
+# Calculates the numbering based on the call graph relation.
+### Author: John Whaley
+
+# Please refer to Chapter 3 of John Whaley's thesis for full details:
+#   http://suif.stanford.edu/~jwhaley/papers/phdthesis.pdf
+
+
+.basedir "results"
+.include "fielddomains.pa"
+
+.bddnodes 10000000
+.bddcache 1000000
+
+# You can ignore the lines below:
+# found by findbestorder:
+#.bddvarorder G0_C0_C1_N0_F0_I0_M1_M0_V1xV0_VC1xVC0_T0_Z0_T1_H0_H1
+.bddvarorder C0_G0_N0_F0_I0_M1_M0_V1xV0_VC1xVC0_T0_Z0_T1_H0_H1
+
+
+# Here are the abbreviations for domains used in the relations:
+# - V: variables
+# - H: heap objects, named by invocation sites of object creation methods
+# - T: types
+# - F: fields
+# - I: invocation sites
+# - Z: numbers for parameters
+# - N: names
+# - M: methods
+# - C: classes
+
+
+###### Relations
+
+# All input relations are extracted by Joeq front-end
+
+# variable 'v' points to heap object 'h'
+vP0 (v:V0, h:H0) input
+# ha.field may point to hb
+hP0 (ha:H0, field:F0, hb:H1) input
+
+# statement: dest = source (includes passing of arguments and return values)
+A (dest:V0, source:V1) input
+# statement: base.field = src
+S (base:V0, field:F0, src:V1) input
+# statement: dest = base.field
+L (base:V0, field:F0, dest:V1) input
+
+# actual parameters for invocation sites:
+#   'actualparam' is passed as parameter number 'num' at 'invoke'
+actual (invoke:I0, num:Z0, actualparam:V1) input
+# formal parameters for methods:
+#   the formal parameter number 'num' of 'method' is represented as 'formalparam'
+formal (method:M0, num:Z0, formalparam:V0) input
+# Method 'method' contains an invocation site 'invoke' with virtual
+# method name 'name'
+mI (method:M0, invoke:I0, name:N0) input
+# Statically-bound method invocation edges:
+#   invocation site 'invoke' calls method 'target'
+IE0 (invoke:I0, target:M0) input
+
+# variable 'var' has type 'type'
+vT (var:V0, type:T0) input
+# heap object 'heap' has type 'type'
+hT (heap:H0, type:T1) input
+# type T1 is assignable to type T0 (based on sub-classing relationship)
+aT (type:T0, type:T1) input
+# It is type-safe to assign heap object 'h' to variable 'v'
+vPfilter (v:V0, h:H0)
+
+# virtual method dispatch info: 
+#   method 'method' is the target of dispatching method name 'name' on type 'type'
+cha (type:T1, name:N0, method:M0) input
+# 'v' is a local variable in method 'm'
+mV(m : M0, v : V0) input
+
+# 'v' is the return value of method 'method'
+Mret (method:M0, v:V1) input
+# 'v' is return value of invocation site 'invoke'
+Iret (invoke:I0, v:V0) input
+
+IEnum (invoke:I0, target:M0, ccaller:VC1, ccallee:VC0) input
+
+#Mthr (method:M0, v:V1) input
+#Ithr (invoke:I0, v:V0) input
+#IE1 (invoke:I0, target:M0)
+
+# Context-sensitive output relations (cannot print as outputtuples
+# because there are astronomical numbers of contexts)
+IEcs (ccaller:VC0, invoke:I0, ccallee:VC1, target:M0) output
+cA (vcdest:VC0, dest:V0, vcsrc:VC1, source:V1) output
+cvP (vc:VC0, v:V0, h:H0) output
+
+
+# These relations are output as tuples that can be 
+# printed by print_bddbddb_results.py
+
+# field 'ha.field' of heap object 'ha' may point to heap object 'hb'
+hP (ha:H0, field:F0, hb:H1) outputtuples
+# variable 'v' may point to heap object 'h'
+vP (v:V0, h:H0) outputtuples
+# invocation site 'invoke' may call method 'target'
+IE (invoke:I0, target:M0) outputtuples
+
+
+### Insert your new relations below here:
+
+
+
+###### Rules
+
+cvP(_,v,h) :- vP0(v,h).
+cA(_,v1,_,v2) :- A(v1,v2).
+IEcs(vc2,i,vc1,m) :- IE0(i,m), IEnum(i,m,vc2,vc1).
+vPfilter(v,h) :- vT(v,tv), aT(tv,th), hT(h,th).
+cA(vc1,v1,vc2,v2) :- formal(m,z,v1), IEcs(vc2,i,vc1,m), actual(i,z,v2).
+cA(vc2,v2,vc1,v1) :- Mret(m,v1), IEcs(vc2,i,vc1,m), Iret(i,v2).
+cvP(vc1,v1,h) :- cA(vc1,v1,vc2,v2), cvP(vc2,v2,h), vPfilter(v1,h).
+hP(h1,f,h2) :- S(v1,f,v2), cvP(vc1,v1,h1), cvP(vc1,v2,h2).
+cvP(vc1,v2,h2) :- L(v1,f,v2), cvP(vc1,v1,h1), hP(h1,f,h2), vPfilter(v2,h2). split
+vP(v, h) :- cvP(_, v, h).
+IE(i, m) :- IEcs (_,i,_,m).
+
+### Insert your new rules below here:
+
+
