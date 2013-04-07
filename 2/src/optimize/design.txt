@@ -1,0 +1,40 @@
+Optimization for extra credit
+
+
+Bound check
+============
+We remove redundent bound check using the similar idea in null check.
+We keep track of bound check on the same register and kill it if the 
+register is changed. The meet operator is intersection.
+
+Faintness
+=========
+We detect faint variables and remove the quad with all faint variables.
+This is the same analysis as lab1. This optimization is effective in these
+two test cases.
+
+Common Expression reduction
+===========================
+We detect common (binary) expression and remove redundent ones.
+We keep track of the common expressions on the same operator and operands.
+We kill a common expression if its operands contain a defined register.
+The meet operator is intersection.
+ 
+AStore check
+============
+We remove redundent array store check using the similar idea in null check.
+We keep track of array store check on the same array and index and kill it if the 
+register is changed. The meet operator is intersection.
+
+Zero check
+============
+We remove redundent zero check using the similar idea in null check.
+We keep track of zero check on the same register and kill it if the 
+register is changed. The meet operator is intersection.
+
+Constant Prop
+==============
+We implemented constant prop. However the skiplist and quicksort do not
+have any constant prop.
+
+ 
